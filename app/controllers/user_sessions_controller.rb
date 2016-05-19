@@ -4,7 +4,8 @@ class UserSessionsController < ApplicationController
 
  	def create
     	if login(params[:email], params[:password])
-      		redirect_back_or_to(edit_users_path(user), notice: 'Logged in successfully.')
+          @user = User.find_by_email(params[:email])
+      		redirect_back_or_to(edit_user_path(@user))
     	else
       	flash.now.alert = "Login failed."
       	render action: :new
@@ -13,6 +14,6 @@ class UserSessionsController < ApplicationController
 
 	def destroy
 	    logout
-	    redirect_to(root, notice: 'Logged out!')
+	    redirect_to(root_path, "data-no-turbolink"=>true)
 	end
 end

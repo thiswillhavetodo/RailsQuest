@@ -26,7 +26,7 @@ var foodEnergy = 0;
 var fighting = false;
 var shop = [];
 var tier = [ "1", "2", "3", "4", "5", "Food & Potions"];
-var TierNumber = 1;
+var TierNumber = "";
 var shopTier = 1;
 var berserkScore = 5;
 var invulnerableScore = 4;
@@ -35,6 +35,7 @@ function ranInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 $(document).ready(function() {
+if (document.getElementById("sellItems")!=null) {
 document.getElementById("sellItems").style.visibility='hidden';
 document.getElementById("useItems").style.visibility='hidden';
 document.getElementById("buy").style.visibility='hidden';
@@ -64,6 +65,7 @@ document.getElementById("invulnerableGoblin").style.visibility='hidden';
 document.getElementById("invulnerableOrc").style.visibility='hidden';
 document.getElementById("invulnerableOgre").style.visibility='hidden';
 document.getElementById("close").style.visibility='hidden';
+}
 });
 var mouse = {
   name: "Mouse",
@@ -750,6 +752,7 @@ function updateStatus() {
   if (this.hp === this.maxHp) {
     hpCorrection = 0;
   }
+  if (document.querySelector('#level_value')!=null) {
   display_level.innerHTML = "Your level is " + this.level + ".";
   display_strength.innerHTML = "You have " + this.str + " Strength.";
   display_hit.innerHTML = "You have " + this.hit + " Accuracy.";
@@ -785,7 +788,8 @@ function updateStatus() {
   document.getElementById("invulnerableWolf").style.visibility='hidden';
   document.getElementById("invulnerableGoblin").style.visibility='hidden';
   document.getElementById("invulnerableOrc").style.visibility='hidden';
-  document.getElementById("invulnerableOgre").style.visibility='hidden';    
+  document.getElementById("invulnerableOgre").style.visibility='hidden';  
+  }  
 }
 function strPlus() {
   if (this.points > 0) {
@@ -868,8 +872,6 @@ function checkLevel() {
     this.energy = this.maxEnergy;
   }  
   this.gold += 10;
-  correction = 0; 
-  hpCorrection = 0;
   result.innerHTML = "Congratulations, you reach level " + this.level + " and claim 10 gold as a reward. <br/>You have " + this.points + " Attribute Points to spend and your Hit Points have increased to " + this.hp + ".<br/>You now have " + this.xp + " Experience Points. Next level at " + this.nextLevelXp + ".";
   this.updateStatus(); 
     }
@@ -1820,7 +1822,7 @@ function setStock() {
   var stockTable = document.getElementById('stock');
   document.getElementById("findItem").style.visibility='visible';
   document.getElementById("shopStock").style.visibility='visible'; 
-  if (shopTier==="1") {
+  if (shopTier=="1") {
     shop = [" Wooden Sword", " Wooden Shield", " Cloth Hat", " Cloth Shirt", " Cloth Legs", " Cloth Gloves", " Cloth Boots", " Worn Ring", " Worn Amulet"];
     stockTable.rows[1].cells[0].innerHTML = 'Wooden Sword'; 
     stockTable.rows[1].cells[1].innerHTML = 'Strength +5'; 
@@ -1850,7 +1852,7 @@ function setStock() {
     stockTable.rows[9].cells[1].innerHTML = 'Max Health +10';    
     stockTable.rows[9].cells[2].innerHTML = '65 gold';    
   }
-  else if (shopTier ==="2") { 
+  else if (shopTier =="2") { 
     shop = [" Truncheon", " Hardwood Shield", " Leather Hat", " Leather Shirt", " Leather Legs", " Leather Gloves", " Leather Boots", " Tarnished Ring", " Tarnished Amulet"];
     stockTable.rows[1].cells[0].innerHTML = 'Truncheon'; 
     stockTable.rows[1].cells[1].innerHTML = 'Strength +10'; 
@@ -1880,7 +1882,7 @@ function setStock() {
     stockTable.rows[9].cells[1].innerHTML = 'Max Health +20';    
     stockTable.rows[9].cells[2].innerHTML = '135 gold';      
   }
-  else if (shopTier ==="3") { 
+  else if (shopTier =="3") { 
     shop = [" Bone Club", " Reinforced Shield", " Bone Helm", " Bone Chestplate", " Hard Leather Legs", " Hard Leather Mitts", " Hard Leather Boots", " Shiny Ring", " Shiny Amulet"];
     stockTable.rows[1].cells[0].innerHTML = 'Bone Club'; 
     stockTable.rows[1].cells[1].innerHTML = 'Strength +15'; 
@@ -1910,7 +1912,7 @@ function setStock() {
     stockTable.rows[9].cells[1].innerHTML = 'Max Health +30';    
     stockTable.rows[9].cells[2].innerHTML = '215 gold';    
   }
-  else if (shopTier ==="4") { 
+  else if (shopTier =="4") { 
     shop = [" Hatchet", " Kite Shield", " Tin Helm", " Studded Harness", " Studded Legs", " Studded Gloves", " Hobnail Boots", " Engraved Ring", " Engraved Amulet"];
     stockTable.rows[1].cells[0].innerHTML = 'Hatchet'; 
     stockTable.rows[1].cells[1].innerHTML = 'Strength +20'; 
@@ -1940,7 +1942,7 @@ function setStock() {
     stockTable.rows[9].cells[1].innerHTML = 'Max Health +40';    
     stockTable.rows[9].cells[2].innerHTML = '305 gold';     
   }
-  else if (shopTier ==="5") { 
+  else if (shopTier =="5") { 
     shop = [" Bronze Dagger", " Bronze Shield", " Bronze Helm", " Bronze Chainmail", " Bronze Chainlegs", " Bronze Gloves", " Bronze Boots", " Jade Ring", " Jade Amulet"];
     stockTable.rows[1].cells[0].innerHTML = 'Bronze Dagger'; 
     stockTable.rows[1].cells[1].innerHTML = 'Strength +25'; 
@@ -1970,7 +1972,7 @@ function setStock() {
     stockTable.rows[9].cells[1].innerHTML = 'Max Health +50';    
     stockTable.rows[9].cells[2].innerHTML = '405 gold';     
   }  
-  else if (shopTier ==="Food & Potions") {
+  else if (shopTier =="Food & Potions") {
     shop = [" Bread", " Cheese", " Ham", " Stew", " Power Potion"];
     stockTable.rows[1].cells[0].innerHTML = 'Crust of Bread'; 
     stockTable.rows[1].cells[1].innerHTML = 'Health +3, Energy +1';    
@@ -2402,7 +2404,7 @@ function buy() {
         this.gold -= potionPrice;
         this.equipment[this.equipment.length] = item;
         potionPrice += Math.floor(potionPrice/33) + 11;
-        changeStock();
+        setStock();
       }
       else {
         result.innerHTML = "You don't have enough gold to buy that.";
@@ -2792,6 +2794,7 @@ function Character() {
   this.sendData = sendData;
 }
 function welcome() {
+  if (document.querySelector('#level_value')!=null) {
   var levelValue = document.querySelector('#level_value').value;
   this.level = levelValue;
 //  this.level += 0;
@@ -2986,7 +2989,8 @@ function welcome() {
   result.innerHTML = document.querySelector('#message_value').value;  
   other.innerHTML = document.querySelector('#othermessage_value').value;
   TierNumber = document.querySelector('#shopTier_value').value;  
-  character.setStock();  
+  character.setStock(); 
+  } 
 }
 function sendData() {
   levelValue = this.level;

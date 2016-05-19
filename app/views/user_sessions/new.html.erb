@@ -1,20 +1,66 @@
-<h1>Login</h1>
+<%= javascript_include_tag "login"%>
+<div id="login_header"> 
+ 
+  <div id="navbar">
+    <ul>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="forum.html">Forum</a></li>
+      <li><a href="contactUs.html">Contact Us</a></li>
+    </ul> 
+  </div>
+  <h1>The Quest for The Thing</h1>
+  
+</div>
+<div id="login">
+	<div id="logo_left">
+    	<%= image_tag "image1.jpeg" %>
+  	</div>
+  	<div id="login_form">
+  		<div id="login_heading">		
+			<h1>Enter Login Details</h1>
+		</div>
+		<%= form_tag user_sessions_path, method: :post do %>
+			<div class="field">
+				<%= label_tag :email %>
+				<%= text_field_tag :email %>
+				<br>
+			</div>
+			<div class="field">
+				<%= label_tag :password %>
+				<%= password_field_tag :password %>
+				<br>
+			</div>
+			<div class="actions">
+				<%= submit_tag "Login", class: 'button'  %>
+			</div>
+		<% end %>
 
-<%= form_tag user_sessions_path, method: :post do %>
-	<div class="field">
-		<%= label_tag :email %>
-		<%= text_field_tag :email %>
-		<br>
+		<%= link_to 'Not Registered? Sign Up Now', new_user_path %>
+		</div>
+	  	<div id="logo_right">
+	    	<%= image_tag "image2.jpeg" %>
+  	</div>
+</div>
+<div id="mouse_path">
+	<div id="mouseLeftEar" class="mouse noDisplay"></div>
+	<div id="mouseRightEar" class="mouse noDisplay"></div>
+	<div id="mouseBody" class="mouse noDisplay"></div>
+	<div id="mouseHead" class="mouse noDisplay">
+	  <div id="mouseLeftEye" class="mouse noDisplay">
+	    <div id="mouseLeftPupil" class="mouse noDisplay"></div>
+	  </div>
+	  <div id="mouseRightEye" class="mouse noDisplay">
+	    <div id="mouseRightPupil" class="mouse noDisplay"></div>
+	  </div>
 	</div>
-	<div class="field">
-		<%= label_tag :password %>
-		<%= password_field_tag :password %>
-		<br>
-	</div>
-	<div class="actions">
-		<%= submit_tag "Login" %>
-	</div>
-<% end %>
-
-<%= link_to 'Sign Up', new_users_path %>
-<%= link_to 'Back', users_path %>
+	<div id="mouseNose" class="mouse noDisplay"></div>
+	<div id="mouseWhisker1" class="mouseWhisker mouse noDisplay"></div>
+	<div id="mouseWhisker2" class="mouseWhisker mouse noDisplay"></div>
+	<div id="mouseWhisker3" class="mouseWhisker mouse noDisplay"></div>
+	<div id="mouseWhisker4" class="mouseWhisker mouse noDisplay"></div>
+	<div id="mouseWhisker5" class="mouseWhisker mouse noDisplay"></div>
+	<div id="mouseWhisker6" class="mouseWhisker mouse noDisplay"></div>  
+	<div id="mouseTail" class="mouse noDisplay"></div>
+	<div id="mouseFloor" class="mouse noDisplay"></div>
+  </div>
+</div>
