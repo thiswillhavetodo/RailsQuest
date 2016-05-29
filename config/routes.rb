@@ -1,12 +1,18 @@
 Rails.application.routes.draw do
   root to: 'user_sessions#new'
-
-  resources :users
-
+  scope(path_names: { edit: 'character'}) do
+    resources :users do
+      member do
+        get 'battles'
+        get 'equip'
+      end
+    end
+  end
   resources :user_sessions, only: [ :new, :create, :destroy ]
 
   get 'login'  => 'user_sessions#new'
   get 'logout' => 'user_sessions#destroy'
+  #get 'battles' => 'users#battles'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -7,8 +7,138 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+<p class="flash"> <%= flash.notice %> </p>	
+<div id="header"> 
+  <div id="logo">
+    <%= image_tag "image1.jpeg" %>
+  </div>
+  <div id="navbar">
+    <ul>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="forum.html">Forum</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="contactUs.html">Contact Us</a></li>
+      <li><%= link_to "Log Out", logout_path, "data-no-turbolink"=>true%></li>
+    </ul> 
+  </div>
+  <h1>The Quest for The Thing</h1>
 
-<%= yield %>
+  <div id='tutorialLink'>
+    <button>Tutorial</button>  
+  </div>
+  <div id='testStatsLink'>
+    <button onClick='stats()'>Test Stats</button>  
+  </div>  
+</div>
+<div id="content">
+	<%= render "layouts/sideNav" %>
+	<div id="send" class="noDisplay">    
+    <%= form_for(@user, html: {id:"send_form"}) do |f| %>
 
+      <p>
+        <%= f.number_field :level, id: "level_value"%>
+      </p><p>
+        <%= f.number_field :xp, id: "xp_value"%>
+      </p><p>
+        <%= f.number_field :next_level_xp, id: "next_level_xp_value"%>
+        <%= f.number_field :energy, id: "energy_value"%>
+        <%= f.number_field :max_energy, id: "max_energy_value"%>
+        <%= f.number_field :hp, id: "hp_value"%>
+        <%= f.number_field :max_hp, id: "max_hp_value"%>
+        <%= f.number_field :base_max_hp, id: "base_max_hp_value"%>
+        <%= f.number_field :equip_max_hp, id: "equip_max_hp_value"%>
+        <%= f.number_field :strength, id: "strength_value"%>
+        <%= f.number_field :base_strength, id: "base_strength_value"%>
+        <%= f.number_field :equip_strength, id: "equip_strength_value"%>
+        <%= f.number_field :hit, id: "hit_value"%>
+        <%= f.number_field :base_hit, id: "base_hit_value"%>
+        <%= f.number_field :equip_hit, id: "equip_hit_value"%>
+        <%= f.number_field :defence, id: "defence_value"%>
+        <%= f.number_field :base_defence, id: "base_defence_value"%>
+        <%= f.number_field :equip_defence, id: "equip_defence_value"%>        
+        <%= f.number_field :chest_defence, id: "chest_defence_value"%>
+        <%= f.number_field :leg_defence, id: "leg_defence_value"%>
+        <%= f.number_field :helm_defence, id: "helm_defence_value"%> 
+        <%= f.number_field :evade, id: "evade_value"%>
+        <%= f.number_field :base_evade, id: "base_evade_value"%>
+        <%= f.number_field :equip_evade, id: "equip_evade_value"%>     
+        <%= f.number_field :shield_evade, id: "shield_evade_value"%>
+        <%= f.number_field :boot_evade, id: "boot_evade_value"%> 
+        <%= f.number_field :luck, id: "luck_value"%>
+        <%= f.number_field :base_luck, id: "base_luck_value"%>
+        <%= f.number_field :equip_luck, id: "equip_luck_value"%> 
+        <%= f.text_field :equipment, id: "equipment_value"%>                                   
+        <%= f.number_field :gold, id: "gold_value"%>
+        <%= f.text_field :weapon, id: "weapon_value"%>    
+        <%= f.text_field :shield, id: "shield_value"%>  
+        <%= f.text_field :helm, id: "helm_value"%>    
+        <%= f.text_field :chest, id: "chest_value"%>
+        <%= f.text_field :legs, id: "legs_value"%>    
+        <%= f.text_field :gloves, id: "gloves_value"%>   
+        <%= f.text_field :boots, id: "boots_value"%>
+        <%= f.text_field :ring, id: "ring_value"%>    
+        <%= f.text_field :amulet, id: "amulet_value"%> 
+        <%= f.number_field :mouse_kills, id: "mouse_kills_value"%> 
+        <%= f.number_field :rat_kills, id: "rat_kills_value"%>
+        <%= f.number_field :dog_kills, id: "dog_kills_value"%>  
+        <%= f.number_field :wolf_kills, id: "wolf_kills_value"%> 
+        <%= f.number_field :goblin_kills, id: "goblin_kills_value"%>
+        <%= f.number_field :orc_kills, id: "orc_kills_value"%> 
+        <%= f.number_field :ogre_kills, id: "ogre_kills_value"%> 
+        <%= f.number_field :potion_price, id: "potion_price_value"%>
+        <%= f.number_field :points, id: "points_value"%>
+        <%= f.datetime_field :hp_time, id: "hp_time_value"%>
+        <%= f.datetime_field :energy_time, id: "energy_time_value"%>  
+        <%= f.text_field :message, id: "message_value"%>   
+        <%= f.text_field :othermessage, id: "othermessage_value"%>  
+        <%= f.text_field :shopTier, id: "shopTier_value"%>        
+      </p>    
+      <p>
+        <%= f.submit %>
+      </p>
+    <% end %>
+  </div>
+  <div id="infoDump" class="noDisplay">
+    <div id="characterContainer"class="container">  
+      <p id="display_level">Your level is <%= @user.level %>.</p>
+      <p id="display_strength">You have <%= @user.strength %> Strength.</p>
+      <p id="display_hit">You have <%= @user.hit %> Accuracy.</p>
+      <p id="display_def">You have <%= @user.defence %> Defence.</p>
+      <p id="display_dodge">You have <%= @user.evade %> Evade.</p>
+      <p id="display_luck">You have <%= @user.luck %> Luck.</p>
+      <p id="display_points">You have <%= @user.points %> Attribute Points.</p>
+    </div>
+    <div id="adventureContainer"class="container">
+      <p id="display_HP">Health: <%= @user.hp %>/<%= @user.max_hp %></p>
+      <p id="display_energy">Energy: <%= @user.energy %>/<%= @user.max_energy %></p>
+      <p id="display_Xp">Experience Points: <%= @user.xp %></p>
+      <p id="display_NextLevelAt">Next Level at: <%= @user.next_level_xp %></p>
+      <p id="display_Gold">Gold: <%= @user.gold %></p>
+      <p id="display_Equipment">Equipment:</p>
+    </div>
+    <div id="armourContainer"class="container">
+      <p id="display_Weapon">Weapon: <%= @user.weapon %></p>
+      <p id="display_Shield">Shield: <%= @user.shield %></p>
+      <p id="display_Helm">Helm: <%= @user.helm %></p>
+      <p id="display_Chest">Chest: <%= @user.chest %></p>
+      <p id="display_Legs">Legs: <%= @user.legs %></p>
+      <p id="display_Gloves">Gloves: <%= @user.gloves %></p>
+      <p id="display_Boots">Boots: <%= @user.boots %></p>
+      <p id="display_Ring">Ring: <%= @user.ring %></p>
+      <p id="display_Amulet">Amulet: <%= @user.amulet %></p>
+    </div>    
+  </div>
+	<%= yield %>
+	<div id='testStats'>
+	  <p id='headers'>Name, Str, Hit, Def, Dodge, HP, XP, Difficulty, Defeats</p>
+	  <p id='mouseStats'></p>
+	  <p id='ratStats'></p>
+	  <p id='dogStats'></p>
+	  <p id='wolfStats'></p>
+	  <p id='goblinStats'></p>
+	  <p id='orcStats'></p>
+	  <p id='ogreStats'></p>
+	</div> 	
+</div>
 </body>
 </html>

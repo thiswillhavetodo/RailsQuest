@@ -1,0 +1,119 @@
+
+  <div id="adventure_stats">
+    <div id="adventureHeading" class="heading"> 
+      <h4><span><%= @user.name %>'s Adventure Stats:&nbsp;</span></h4>
+    </div>
+    <div id="adventureContainer"class="container">
+      <p id="display_HP">Health: <%= @user.hp %>/<%= @user.max_hp %></p>
+      <p id="display_energy">Energy: <%= @user.energy %>/<%= @user.max_energy %></p>
+      <p id="display_Xp">Experience Points: <%= @user.xp %></p>
+      <p id="display_NextLevelAt">Next Level at: <%= @user.next_level_xp %></p>
+      <p id="display_Gold">Gold: <%= @user.gold %></p>
+      <p id="display_Equipment">Equipment:<%= @user.equipment %></p>
+      <button onClick="character.find()" id="listItems">Sell/Use Items</button>
+      <select id="equipment"></select>
+      <br/>
+      <button onClick="character.sell()" id="sellItems">Sell</button>
+      <br/>
+      <button onClick="character.use()" id="useItems">Use</button>
+    </div>
+  </div>
+  
+  <div id="armour">
+    <div id="armourHeading" class="heading"> 
+      <h4><span><%= @user.name %>'s Armour:&nbsp;</span></h4>
+    </div>
+    <div id="armourContainer"class="container">
+      <p id="display_Weapon">Weapon: <%= @user.weapon %></p>
+      <p id="display_Shield">Shield: <%= @user.shield %></p>
+      <p id="display_Helm">Helm: <%= @user.helm %></p>
+      <p id="display_Chest">Chest: <%= @user.chest %></p>
+      <p id="display_Legs">Legs: <%= @user.legs %></p>
+      <p id="display_Gloves">Gloves: <%= @user.gloves %></p>
+      <p id="display_Boots">Boots: <%= @user.boots %></p>
+      <p id="display_Ring">Ring: <%= @user.ring %></p>
+      <p id="display_Amulet">Amulet: <%= @user.amulet %></p>
+    </div>
+  </div>
+
+  <div id="shop">
+    <div id="shopHeading" class="heading"> 
+      <h4><span>Goblin Dave's Used Goods Emporium&nbsp;</span></h4>
+    </div>
+    <div id="shopContainer"class="container">
+      <div id="shopButtons">    
+        <button onClick="character.findShop()" id="findItem">Choose Item</button>      
+        <select id="shopStock"></select>         
+        <button onClick="character.buy()" id="buy">Buy</button>
+         <br/>
+        <button onClick="character.findTier()" id="find_tier">Choose Tier</button>  
+        <select id="shop_Tier"></select> 
+        <button onClick="character.changeStock()" id="newStock">Confirm</button>  
+      </div>
+    </div>
+      <table id="stock">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Effect</th>
+            <th class="price">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Wooden Sword</td>
+            <td>Strength +5</td>
+            <td class="price">58 gold</td>
+          </tr>
+          <tr>
+            <td>Wooden Shield</td>
+            <td>Evade +4</td>
+            <td class="price">50 gold</td>
+          </tr>
+          <tr>
+            <td>Cloth Hat</td>
+            <td>Defence +2</td>
+            <td class="price">24 gold</td>
+          </tr>
+          <tr>
+            <td>Cloth Shirt</td>
+            <td>Defence +4</td>
+            <td class="price">54 gold</td>
+          </tr>
+          <tr>
+            <td>Cloth Legs</td>
+            <td>Defence +4</td>
+            <td class="price">48 gold</td>
+          </tr>
+          <tr>
+            <td>Cloth Gloves</td>
+            <td>Accuracy +5</td>
+            <td class="price">58 gold</td>
+          </tr>
+          <tr>
+            <td>Cloth Boots</td>
+            <td>Evade +4</td>
+            <td class="price">48 gold</td>
+          </tr>
+          <tr>
+            <td>Worn Ring</td>
+            <td>Luck +2</td>
+            <td class="price">65 gold</td>
+          </tr>
+          <tr>
+            <td>Worn Amulet</td>
+            <td>Max Health +10 </td>
+            <td class="price">65 gold</td>
+          </tr>    
+        </tbody>
+  </div>  
+
+<div id="yourMessages">
+  <div id="messageHeading" class="heading"> 
+    <h4><span><%= @user.name %>'s Messages:&nbsp;</span></h4>
+  </div>
+  <div id="messageContainer"class="container">
+    <p id="result"></p>
+    <p id="other"></p>
+  </div>
+</div> 

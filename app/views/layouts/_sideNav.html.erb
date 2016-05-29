@@ -1,0 +1,18 @@
+    <div id="sideNav">
+      <ul>
+        <li id="linkHeader">Links</li>
+        <li><%= link_to "Character", edit_user_path(@user), "data-no-turbolink"=>true%></li>
+        <li><%= link_to "Equipment & Shop", equip_user_path(@user), "data-no-turbolink"=>true%></li>
+        <li><%= link_to "Battles", battles_user_path(@user), "data-no-turbolink"=>true%></li>
+      </ul>
+      <ul>     
+        <li id="statHeader">Stats</li>   
+        <li id="display_level">Your level is <%= @user.level %>.</li>
+        <li id="display_HP">Health: <%= @user.hp %>/<%= @user.max_hp %></li>
+        <li id="display_energy">Energy: <%= @user.energy %>/<%= @user.max_energy %></li>
+        <li id="display_Xp">Experience Points: <%= @user.xp %></li>
+        <li id="display_NextLevelAt">Next Level at: <%= @user.next_level_xp %></li>
+        <li id="display_Gold">Gold: <%= @user.gold %></li> 
+      </ul>        
+      <button id="update" onClick="character.sendData()">Update</button>  
+    </div>

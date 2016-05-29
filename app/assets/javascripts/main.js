@@ -42,7 +42,9 @@ document.getElementById("buy").style.visibility='hidden';
 document.getElementById("newStock").style.visibility='hidden'; 
 document.getElementById("findItem").style.visibility='hidden';
 document.getElementById("shopStock").style.visibility='hidden'; 
-document.getElementById("shop_Tier").style.visibility='hidden'; 
+document.getElementById("shop_Tier").style.visibility='hidden';
+} 
+if (document.getElementById("attackMouse")!=null) {
 document.getElementById("attackMouse").style.visibility='hidden';
 document.getElementById("attackRat").style.visibility='hidden';
 document.getElementById("attackDog").style.visibility='hidden';
@@ -366,8 +368,8 @@ function fight(enemy) {
       enemy.def = (enemy.def + 1) + Math.floor(enemy.def/25);
       enemy.dodge = (enemy.dodge + 1) + Math.floor(enemy.dodge/25);
       enemy.xpWin = (enemy.xpWin + 1) + Math.floor(enemy.xpWin/45);
-      enemy.xpDraw = (enemy.xpDraw + 1) + Math.floor(enemy.xpDraw/30);
-      enemy.xpLose = (enemy.xpLose + 1) + Math.floor(enemy.xpLose/20);
+      enemy.xpDraw = (enemy.xpDraw + 1) + Math.floor(enemy.xpDraw/25);
+      enemy.xpLose = (enemy.xpLose + 1) + Math.floor(enemy.xpLose/25);
       if (enemy.xpWin/enemy.energyCost<8 && enemy.levelUps>=enemy.veteranCount){
         enemy.veteranCount +=5;
         enemy.str ++;
@@ -392,15 +394,24 @@ function fight(enemy) {
         enemy.maxHp += 2;
       }
     }
+    console.log(enemy.name + ', s: ' + enemy.str + ', h: ' + enemy.hit + ', d: ' + enemy.def + ', e: ' + enemy.dodge + ', hp: ' + enemy.maxHp);
   }
   attack = function()  {
     var randomize = (Math.random(0,1) + 0.25);
-    var score = Math.floor((self.luck/10)/randomize); 
+    var score = (self.luck/10)/randomize; 
     highRoll = Math.floor(enemy.level/3) + 4;
-    scaler = Math.floor(enemy.level/5);
+//    scaler = Math.floor(enemy.level/5);
     enemyRoll = ranInt(1, highRoll);
     yourRoll = ranInt(1, highRoll) + score;
-      if (((self.str + yourRoll) - (enemy.def + enemyRoll)) > 0){
+    mitigate = 1-((enemy.def + enemyRoll)/(self.str + yourRoll));
+    enemyMitigate = 1-((self.def + yourRoll)/(enemy.str + enemyRoll))
+    if (mitigate<0.1){
+      yourDamageThisRound = Math.round((self.str + yourRoll) * ((self.hit + yourRoll)/(enemy.dodge + enemyRoll)) * 0.1)
+    }
+    else {
+      yourDamageThisRound = Math.round((self.str + yourRoll) * ((self.hit + yourRoll)/(enemy.dodge + enemyRoll)) * mitigate)
+    };
+/*      if (((self.str + yourRoll) - (enemy.def + enemyRoll)) > 0){
         if ((self.hit + yourRoll) - (enemy.dodge + enemyRoll) > (2 + scaler)) {
           yourDamageThisRound = 2* ((self.str + yourRoll) - (enemy.def + enemyRoll));         
         }
@@ -421,7 +432,7 @@ function fight(enemy) {
         else {
           yourDamageThisRound = 1;          
         }
-      }
+      }*/
   if (yourDamageThisRound>=10) {
     $('#hit').css('left', '510px');
   }
@@ -431,7 +442,13 @@ function fight(enemy) {
   hit.innerHTML = " " + yourDamageThisRound;   
   enemy.hp -= yourDamageThisRound; 
   enemyHP.innerHTML = enemy.name + " health: " + enemy.hp;
-      if (((enemy.str + enemyRoll) - (self.def + yourRoll)) > 0 ){
+  if (enemyMitigate<0.1){
+    enemyDamageThisRound = Math.round((enemy.str + enemyRoll) * ((enemy.hit + enemyRoll)/(self.dodge + yourRoll)) * 0.1)
+    }
+  else {
+    enemyDamageThisRound = Math.round((enemy.str + enemyRoll) * ((enemy.hit + enemyRoll)/(self.dodge + yourRoll)) * enemyMitigate)
+  };
+  /*      if (((enemy.str + enemyRoll) - (self.def + yourRoll)) > 0 ){
         if ((enemy.hit + enemyRoll) - (self.dodge + yourRoll) > (2 + scaler)) {
           enemyDamageThisRound = 2* ((enemy.str + enemyRoll) - (self.def + yourRoll));          
         }
@@ -452,7 +469,7 @@ function fight(enemy) {
         else {
           enemyDamageThisRound = 1;          
         } 
-      }
+      }*/
   if (enemyDamageThisRound>=10) {
     $('#enemyhit').css('left', '410px');
   }
@@ -551,13 +568,21 @@ function fight(enemy) {
     berserk = function()  {
     $('.eye').css('background-color', 'red'); 
     var randomize = (Math.random(0,1) + 0.2);
-    var score = Math.floor((self.luck/10)/randomize);
+    var score = (self.luck/10)/randomize; 
     var berserkModifier = 2 + Math.floor(0.46*((self.str + self.hit + self.luck) / 3)) 
     highRoll = Math.floor(enemy.level/3) + 4;
-    scaler = Math.floor(enemy.level/5);
+//    scaler = Math.floor(enemy.level/5);
     enemyRoll = ranInt(1, highRoll);
     yourRoll = ranInt(1, highRoll) + score;
-      if (((self.str + yourRoll + berserkModifier) - (enemy.def + enemyRoll)) > 0){
+    mitigate = 1-((enemy.def + enemyRoll)/(self.str + yourRoll + berserkModifier));
+    enemyMitigate = 1-((self.def + yourRoll)/(enemy.str + enemyRoll))
+    if (mitigate<0.1){
+      yourDamageThisRound = Math.round((self.str + yourRoll + berserkModifier) * ((self.hit + yourRoll + berserkModifier)/(enemy.dodge + enemyRoll)) * 0.1)
+    }
+    else {
+      yourDamageThisRound = Math.round((self.str + yourRoll + berserkModifier) * ((self.hit + yourRoll + berserkModifier)/(enemy.dodge + enemyRoll)) * mitigate)
+    };   
+/*      if (((self.str + yourRoll + berserkModifier) - (enemy.def + enemyRoll)) > 0){
         if ((self.hit + yourRoll + berserkModifier) - (enemy.dodge + enemyRoll) > (2 + scaler)) {
           yourDamageThisRound = 2* ((self.str + yourRoll + berserkModifier) - (enemy.def + enemyRoll));         
         }
@@ -578,7 +603,7 @@ function fight(enemy) {
         else {
           yourDamageThisRound = 1;          
         }
-      }
+      }*/
   if (yourDamageThisRound>=10) {
     $('#hit').css('left', '510px');
   }
@@ -588,7 +613,13 @@ function fight(enemy) {
   hit.innerHTML = yourDamageThisRound;   
   enemy.hp -= yourDamageThisRound; 
   enemyHP.innerHTML = enemy.name + " health: " + enemy.hp;
-      if (((enemy.str + enemyRoll) - (self.def + yourRoll)) > 0 ){
+  if (enemyMitigate<0.1){
+    enemyDamageThisRound = Math.round((enemy.str + enemyRoll) * ((enemy.hit + enemyRoll)/(self.dodge + yourRoll)) * 0.1)
+    }
+  else {
+    enemyDamageThisRound = Math.round((enemy.str + enemyRoll) * ((enemy.hit + enemyRoll)/(self.dodge + yourRoll)) * enemyMitigate)
+  };
+    /*      if (((enemy.str + enemyRoll) - (self.def + yourRoll)) > 0 ){
         if ((enemy.hit + enemyRoll) - (self.dodge + yourRoll) > (2 + scaler)) {
           enemyDamageThisRound = 2* ((enemy.str + enemyRoll) - (self.def + yourRoll));          
         }
@@ -609,7 +640,7 @@ function fight(enemy) {
         else {
           enemyDamageThisRound = 1;          
         } 
-      }
+      }*/
   if (enemyDamageThisRound>=10) {
     $('#enemyhit').css('left', '410px');
   }
@@ -663,12 +694,20 @@ function fight(enemy) {
   invulnerable = function()  {
     $('#shield').css({'width': '150px', 'height': '150px'});  
     var randomize = (Math.random(0,1) + 0.2);
-    var score = Math.floor((self.luck/10)/randomize); 
+    var score = (self.luck/10)/randomize; 
     highRoll = Math.floor(enemy.level/3) + 4;
-    scaler = Math.floor(enemy.level/5);
+//    scaler = Math.floor(enemy.level/5);
     enemyRoll = ranInt(1, highRoll);
     yourRoll = ranInt(1, highRoll) + score;
-      if (((self.str + yourRoll) - (enemy.def + enemyRoll)) > 0){
+    mitigate = 1-((enemy.def + enemyRoll)/(self.str + yourRoll));
+    enemyMitigate = 1-((self.def + yourRoll)/(enemy.str + enemyRoll))
+    if (mitigate<0.1){
+      yourDamageThisRound = Math.round((self.str + yourRoll) * ((self.hit + yourRoll)/(enemy.dodge + enemyRoll)) * 0.1)
+    }
+    else {
+      yourDamageThisRound = Math.round((self.str + yourRoll) * ((self.hit + yourRoll)/(enemy.dodge + enemyRoll)) * mitigate)
+    };
+    /*      if (((self.str + yourRoll) - (enemy.def + enemyRoll)) > 0){
         if ((self.hit + yourRoll) - (enemy.dodge + enemyRoll) > (2 + scaler)) {
           yourDamageThisRound = 2* ((self.str + yourRoll) - (enemy.def + enemyRoll));         
         }
@@ -689,7 +728,7 @@ function fight(enemy) {
         else {
           yourDamageThisRound = 1;          
         }
-      } 
+      } */
   if (yourDamageThisRound>=10) {
     $('#hit').css('left', '510px');
   }
@@ -746,12 +785,11 @@ function updateStatus() {
       (this.energy = 0);
     }
   }
-  if (this.energy === this.maxEnergy) {
-    correction = 0;
-  }
-  if (this.hp === this.maxHp) {
-    hpCorrection = 0;
-  }
+  display_HP.innerHTML = "Health: " + this.hp + "/" + this.maxHp;
+  display_energy.innerHTML = "Energy: " + this.energy + "/" + this.maxEnergy;
+  display_Xp.innerHTML = "Experience Points: " + this.xp;
+  display_NextLevelAt.innerHTML = "Next Level at: " + this.nextLevelXp;
+  display_Gold.innerHTML = "Gold: " + this.gold;  
   if (document.querySelector('#level_value')!=null) {
   display_level.innerHTML = "Your level is " + this.level + ".";
   display_strength.innerHTML = "You have " + this.str + " Strength.";
@@ -760,11 +798,6 @@ function updateStatus() {
   display_dodge.innerHTML = "You have " + this.dodge + " Evade.";
   display_luck.innerHTML = "You have " + this.luck + " Luck.";
   display_points.innerHTML = "You have " + this.points + " Attribute Points to  spend.";
-  display_HP.innerHTML = "Health: " + this.hp + "/" + this.maxHp;
-  display_energy.innerHTML = "Energy: " + this.energy + "/" + this.maxEnergy;
-  display_Xp.innerHTML = "Experience Points: " + this.xp;
-  display_NextLevelAt.innerHTML = "Next Level at: " + this.nextLevelXp;
-  display_Gold.innerHTML = "Gold: " + this.gold;
   display_Equipment.innerHTML = "Equipment:" + this.equipment;
   display_Weapon.innerHTML = "Weapon: " + this.weapon;
   display_Chest.innerHTML = "Chest: " + this.chest;
@@ -775,6 +808,8 @@ function updateStatus() {
   display_Boots.innerHTML = "Boots: " + this.boots;
   display_Ring.innerHTML = "Ring: " + this.ring;
   display_Amulet.innerHTML = "Amulet: " + this.amulet; 
+  }
+  if (document.getElementById("berserkMouse")!=null) {
   document.getElementById("berserkMouse").style.visibility='hidden';
   document.getElementById("berserkRat").style.visibility='hidden';
   document.getElementById("berserkDog").style.visibility='hidden';
@@ -877,7 +912,7 @@ function checkLevel() {
     }
 }
 function lowDrop(difficulty) {
-  var luckNerf = Math.floor(this.luck*0.75);
+  var luckNerf = Math.round(this.luck*0.75);
   var luckValue = 1;
   if (luckNerf<1) {
     luckValue = 1;
@@ -1818,192 +1853,194 @@ function changeStock() {
   document.getElementById("newStock").style.visibility='hidden';
 }
 function setStock() {
-  var shopTier = TierNumber;
-  var stockTable = document.getElementById('stock');
-  document.getElementById("findItem").style.visibility='visible';
-  document.getElementById("shopStock").style.visibility='visible'; 
-  if (shopTier=="1") {
-    shop = [" Wooden Sword", " Wooden Shield", " Cloth Hat", " Cloth Shirt", " Cloth Legs", " Cloth Gloves", " Cloth Boots", " Worn Ring", " Worn Amulet"];
-    stockTable.rows[1].cells[0].innerHTML = 'Wooden Sword'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Strength +5'; 
-    stockTable.rows[1].cells[2].innerHTML = '58 gold'; 
-    stockTable.rows[2].cells[0].innerHTML = 'Wooden Shield';
-    stockTable.rows[2].cells[1].innerHTML = 'Evade +4';        
-    stockTable.rows[2].cells[2].innerHTML = '50 gold';        
-    stockTable.rows[3].cells[0].innerHTML = 'Cloth Hat';        
-    stockTable.rows[3].cells[1].innerHTML = 'Defence +2';        
-    stockTable.rows[3].cells[2].innerHTML = '24 gold';        
-    stockTable.rows[4].cells[0].innerHTML = 'Cloth Shirt';  
-    stockTable.rows[4].cells[1].innerHTML = 'Defence +4';    
-    stockTable.rows[4].cells[2].innerHTML = '54 gold';    
-    stockTable.rows[5].cells[0].innerHTML = 'Cloth Legs'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Defence +4';    
-    stockTable.rows[5].cells[2].innerHTML = '48 gold'; 
-    stockTable.rows[6].cells[0].innerHTML = 'Cloth Gloves';  
-    stockTable.rows[6].cells[1].innerHTML = 'Accuracy +5';    
-    stockTable.rows[6].cells[2].innerHTML = '60 gold';    
-    stockTable.rows[7].cells[0].innerHTML = 'Cloth Boots'; 
-    stockTable.rows[7].cells[1].innerHTML = 'Evade +4';    
-    stockTable.rows[7].cells[2].innerHTML = '48 gold';
-    stockTable.rows[8].cells[0].innerHTML = 'Worn Ring'; 
-    stockTable.rows[8].cells[1].innerHTML = 'Luck +2';    
-    stockTable.rows[8].cells[2].innerHTML = '65 gold'; 
-    stockTable.rows[9].cells[0].innerHTML = 'Worn Amulet'; 
-    stockTable.rows[9].cells[1].innerHTML = 'Max Health +10';    
-    stockTable.rows[9].cells[2].innerHTML = '65 gold';    
+  if (document.getElementById("findItem")!=null) {
+    var shopTier = TierNumber;
+    var stockTable = document.getElementById('stock');
+    document.getElementById("findItem").style.visibility='visible';
+    document.getElementById("shopStock").style.visibility='visible'; 
+    if (shopTier=="1") {
+      shop = [" Wooden Sword", " Wooden Shield", " Cloth Hat", " Cloth Shirt", " Cloth Legs", " Cloth Gloves", " Cloth Boots", " Worn Ring", " Worn Amulet"];
+      stockTable.rows[1].cells[0].innerHTML = 'Wooden Sword'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Strength +5'; 
+      stockTable.rows[1].cells[2].innerHTML = '58 gold'; 
+      stockTable.rows[2].cells[0].innerHTML = 'Wooden Shield';
+      stockTable.rows[2].cells[1].innerHTML = 'Evade +4';        
+      stockTable.rows[2].cells[2].innerHTML = '50 gold';        
+      stockTable.rows[3].cells[0].innerHTML = 'Cloth Hat';        
+      stockTable.rows[3].cells[1].innerHTML = 'Defence +2';        
+      stockTable.rows[3].cells[2].innerHTML = '24 gold';        
+      stockTable.rows[4].cells[0].innerHTML = 'Cloth Shirt';  
+      stockTable.rows[4].cells[1].innerHTML = 'Defence +4';    
+      stockTable.rows[4].cells[2].innerHTML = '54 gold';    
+      stockTable.rows[5].cells[0].innerHTML = 'Cloth Legs'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Defence +4';    
+      stockTable.rows[5].cells[2].innerHTML = '48 gold'; 
+      stockTable.rows[6].cells[0].innerHTML = 'Cloth Gloves';  
+      stockTable.rows[6].cells[1].innerHTML = 'Accuracy +5';    
+      stockTable.rows[6].cells[2].innerHTML = '60 gold';    
+      stockTable.rows[7].cells[0].innerHTML = 'Cloth Boots'; 
+      stockTable.rows[7].cells[1].innerHTML = 'Evade +4';    
+      stockTable.rows[7].cells[2].innerHTML = '48 gold';
+      stockTable.rows[8].cells[0].innerHTML = 'Worn Ring'; 
+      stockTable.rows[8].cells[1].innerHTML = 'Luck +2';    
+      stockTable.rows[8].cells[2].innerHTML = '65 gold'; 
+      stockTable.rows[9].cells[0].innerHTML = 'Worn Amulet'; 
+      stockTable.rows[9].cells[1].innerHTML = 'Max Health +10';    
+      stockTable.rows[9].cells[2].innerHTML = '65 gold';    
+    }
+    else if (shopTier =="2") { 
+      shop = [" Truncheon", " Hardwood Shield", " Leather Hat", " Leather Shirt", " Leather Legs", " Leather Gloves", " Leather Boots", " Tarnished Ring", " Tarnished Amulet"];
+      stockTable.rows[1].cells[0].innerHTML = 'Truncheon'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Strength +10'; 
+      stockTable.rows[1].cells[2].innerHTML = '131 gold'; 
+      stockTable.rows[2].cells[0].innerHTML = 'Hardwood Shield';
+      stockTable.rows[2].cells[1].innerHTML = 'Evade +8';        
+      stockTable.rows[2].cells[2].innerHTML = '120 gold';        
+      stockTable.rows[3].cells[0].innerHTML = 'Leather Hat';        
+      stockTable.rows[3].cells[1].innerHTML = 'Defence +4';        
+      stockTable.rows[3].cells[2].innerHTML = '67 gold';        
+      stockTable.rows[4].cells[0].innerHTML = 'Leather Shirt';  
+      stockTable.rows[4].cells[1].innerHTML = 'Defence +8';    
+      stockTable.rows[4].cells[2].innerHTML = '124 gold';    
+      stockTable.rows[5].cells[0].innerHTML = 'Leather Legs'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Defence +8';    
+      stockTable.rows[5].cells[2].innerHTML = '115 gold'; 
+      stockTable.rows[6].cells[0].innerHTML = 'Leather Gloves';  
+      stockTable.rows[6].cells[1].innerHTML = 'Accuracy +10';    
+      stockTable.rows[6].cells[2].innerHTML = '131 gold';    
+      stockTable.rows[7].cells[0].innerHTML = 'Leather Boots'; 
+      stockTable.rows[7].cells[1].innerHTML = 'Evade +8';    
+      stockTable.rows[7].cells[2].innerHTML = '112 gold'; 
+      stockTable.rows[8].cells[0].innerHTML = 'Tarnished Ring'; 
+      stockTable.rows[8].cells[1].innerHTML = 'Luck +4';    
+      stockTable.rows[8].cells[2].innerHTML = '135 gold'; 
+      stockTable.rows[9].cells[0].innerHTML = 'Tarnished Amulet'; 
+      stockTable.rows[9].cells[1].innerHTML = 'Max Health +20';    
+      stockTable.rows[9].cells[2].innerHTML = '135 gold';      
+    }
+    else if (shopTier =="3") { 
+      shop = [" Bone Club", " Reinforced Shield", " Bone Helm", " Bone Chestplate", " Hard Leather Legs", " Hard Leather Mitts", " Hard Leather Boots", " Shiny Ring", " Shiny Amulet"];
+      stockTable.rows[1].cells[0].innerHTML = 'Bone Club'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Strength +15'; 
+      stockTable.rows[1].cells[2].innerHTML = '213 gold'; 
+      stockTable.rows[2].cells[0].innerHTML = 'Reinforced Shield';
+      stockTable.rows[2].cells[1].innerHTML = 'Evade +12';        
+      stockTable.rows[2].cells[2].innerHTML = '183 gold';        
+      stockTable.rows[3].cells[0].innerHTML = 'Bone Helm';        
+      stockTable.rows[3].cells[1].innerHTML = 'Defence +6';        
+      stockTable.rows[3].cells[2].innerHTML = '103 gold';        
+      stockTable.rows[4].cells[0].innerHTML = 'Bone Chestplate';  
+      stockTable.rows[4].cells[1].innerHTML = 'Defence +12';    
+      stockTable.rows[4].cells[2].innerHTML = '196 gold';    
+      stockTable.rows[5].cells[0].innerHTML = 'Hard Leather Legs'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Defence +12';    
+      stockTable.rows[5].cells[2].innerHTML = '181 gold'; 
+      stockTable.rows[6].cells[0].innerHTML = 'Hard Leather Mitts';  
+      stockTable.rows[6].cells[1].innerHTML = 'Accuracy +15';    
+      stockTable.rows[6].cells[2].innerHTML = '213 gold';    
+      stockTable.rows[7].cells[0].innerHTML = 'Hard Leather Boots'; 
+      stockTable.rows[7].cells[1].innerHTML = 'Evade +12';    
+      stockTable.rows[7].cells[2].innerHTML = '178 gold';
+      stockTable.rows[8].cells[0].innerHTML = 'Shiny Ring'; 
+      stockTable.rows[8].cells[1].innerHTML = 'Luck +6';    
+      stockTable.rows[8].cells[2].innerHTML = '215 gold'; 
+      stockTable.rows[9].cells[0].innerHTML = 'Shiny Amulet'; 
+      stockTable.rows[9].cells[1].innerHTML = 'Max Health +30';    
+      stockTable.rows[9].cells[2].innerHTML = '215 gold';    
+    }
+    else if (shopTier =="4") { 
+      shop = [" Hatchet", " Kite Shield", " Tin Helm", " Studded Harness", " Studded Legs", " Studded Gloves", " Hobnail Boots", " Engraved Ring", " Engraved Amulet"];
+      stockTable.rows[1].cells[0].innerHTML = 'Hatchet'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Strength +20'; 
+      stockTable.rows[1].cells[2].innerHTML = '301 gold'; 
+      stockTable.rows[2].cells[0].innerHTML = 'Kite Shield';
+      stockTable.rows[2].cells[1].innerHTML = 'Evade +16';        
+      stockTable.rows[2].cells[2].innerHTML = '265 gold';        
+      stockTable.rows[3].cells[0].innerHTML = 'Tin Helm';        
+      stockTable.rows[3].cells[1].innerHTML = 'Defence +8';        
+      stockTable.rows[3].cells[2].innerHTML = '139 gold';        
+      stockTable.rows[4].cells[0].innerHTML = 'Studded Harness';  
+      stockTable.rows[4].cells[1].innerHTML = 'Defence +16';    
+      stockTable.rows[4].cells[2].innerHTML = '274 gold';    
+      stockTable.rows[5].cells[0].innerHTML = 'Studded Legs'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Defence +16';    
+      stockTable.rows[5].cells[2].innerHTML = '262 gold'; 
+      stockTable.rows[6].cells[0].innerHTML = 'Studded Gloves';  
+      stockTable.rows[6].cells[1].innerHTML = 'Accuracy +20';    
+      stockTable.rows[6].cells[2].innerHTML = '301 gold';    
+      stockTable.rows[7].cells[0].innerHTML = 'Hobnail Boots'; 
+      stockTable.rows[7].cells[1].innerHTML = 'Evade +16';    
+      stockTable.rows[7].cells[2].innerHTML = '256 gold';
+      stockTable.rows[8].cells[0].innerHTML = 'Engraved Ring'; 
+      stockTable.rows[8].cells[1].innerHTML = 'Luck +8';    
+      stockTable.rows[8].cells[2].innerHTML = '305 gold';
+      stockTable.rows[9].cells[0].innerHTML = 'Engraved Amulet'; 
+      stockTable.rows[9].cells[1].innerHTML = 'Max Health +40';    
+      stockTable.rows[9].cells[2].innerHTML = '305 gold';     
+    }
+    else if (shopTier =="5") { 
+      shop = [" Bronze Dagger", " Bronze Shield", " Bronze Helm", " Bronze Chainmail", " Bronze Chainlegs", " Bronze Gloves", " Bronze Boots", " Jade Ring", " Jade Amulet"];
+      stockTable.rows[1].cells[0].innerHTML = 'Bronze Dagger'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Strength +25'; 
+      stockTable.rows[1].cells[2].innerHTML = '403 gold'; 
+      stockTable.rows[2].cells[0].innerHTML = 'Bronze Shield';
+      stockTable.rows[2].cells[1].innerHTML = 'Evade +20';        
+      stockTable.rows[2].cells[2].innerHTML = '333 gold';        
+      stockTable.rows[3].cells[0].innerHTML = 'Bronze Helm';        
+      stockTable.rows[3].cells[1].innerHTML = 'Defence +10';        
+      stockTable.rows[3].cells[2].innerHTML = '175 gold';        
+      stockTable.rows[4].cells[0].innerHTML = 'Bronze Chainmail';  
+      stockTable.rows[4].cells[1].innerHTML = 'Defence +20';    
+      stockTable.rows[4].cells[2].innerHTML = '346 gold';    
+      stockTable.rows[5].cells[0].innerHTML = 'Bronze Chainlegs'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Defence +20';    
+      stockTable.rows[5].cells[2].innerHTML = '334 gold'; 
+      stockTable.rows[6].cells[0].innerHTML = 'Bronze Gloves';  
+      stockTable.rows[6].cells[1].innerHTML = 'Accuracy +25';    
+      stockTable.rows[6].cells[2].innerHTML = '403 gold';    
+      stockTable.rows[7].cells[0].innerHTML = 'Bronze Boots'; 
+      stockTable.rows[7].cells[1].innerHTML = 'Evade +20';    
+      stockTable.rows[7].cells[2].innerHTML = '328 gold';
+      stockTable.rows[8].cells[0].innerHTML = 'Jade Ring'; 
+      stockTable.rows[8].cells[1].innerHTML = 'Luck +10';    
+      stockTable.rows[8].cells[2].innerHTML = '405 gold';
+      stockTable.rows[9].cells[0].innerHTML = 'Jade Amulet'; 
+      stockTable.rows[9].cells[1].innerHTML = 'Max Health +50';    
+      stockTable.rows[9].cells[2].innerHTML = '405 gold';     
+    }  
+    else if (shopTier =="Food & Potions") {
+      shop = [" Bread", " Cheese", " Ham", " Stew", " Power Potion"];
+      stockTable.rows[1].cells[0].innerHTML = 'Crust of Bread'; 
+      stockTable.rows[1].cells[1].innerHTML = 'Health +3, Energy +1';    
+      stockTable.rows[1].cells[2].innerHTML = '19 gold';     
+      stockTable.rows[2].cells[0].innerHTML = 'Piece of Cheese'; 
+      stockTable.rows[2].cells[1].innerHTML = 'Health +5, Energy +2';    
+      stockTable.rows[2].cells[2].innerHTML = '31 gold';     
+      stockTable.rows[3].cells[0].innerHTML = 'Leg of Ham'; 
+      stockTable.rows[3].cells[1].innerHTML = 'Health +8, Energy +3';    
+      stockTable.rows[3].cells[2].innerHTML = '47 gold';     
+      stockTable.rows[4].cells[0].innerHTML = 'Hot Stew'; 
+      stockTable.rows[4].cells[1].innerHTML = 'Health +9, Energy +5';    
+      stockTable.rows[4].cells[2].innerHTML = '70 gold'; 
+      stockTable.rows[5].cells[0].innerHTML = 'Power Potion'; 
+      stockTable.rows[5].cells[1].innerHTML = 'Attribute Points +1';    
+      stockTable.rows[5].cells[2].innerHTML = potionPrice + ' gold';    
+      stockTable.rows[6].cells[0].innerHTML = ''; 
+      stockTable.rows[6].cells[1].innerHTML = '';    
+      stockTable.rows[6].cells[2].innerHTML = '';    
+      stockTable.rows[7].cells[0].innerHTML = ''; 
+      stockTable.rows[7].cells[1].innerHTML = '';    
+      stockTable.rows[7].cells[2].innerHTML = '';    
+      stockTable.rows[8].cells[0].innerHTML = ''; 
+      stockTable.rows[8].cells[1].innerHTML = '';    
+      stockTable.rows[8].cells[2].innerHTML = '';      
+      stockTable.rows[9].cells[0].innerHTML = ''; 
+      stockTable.rows[9].cells[1].innerHTML = '';    
+      stockTable.rows[9].cells[2].innerHTML = '';         
+    }
+    document.getElementById("shop_Tier").style.visibility='hidden';
+    document.getElementById("newStock").style.visibility='hidden';
   }
-  else if (shopTier =="2") { 
-    shop = [" Truncheon", " Hardwood Shield", " Leather Hat", " Leather Shirt", " Leather Legs", " Leather Gloves", " Leather Boots", " Tarnished Ring", " Tarnished Amulet"];
-    stockTable.rows[1].cells[0].innerHTML = 'Truncheon'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Strength +10'; 
-    stockTable.rows[1].cells[2].innerHTML = '131 gold'; 
-    stockTable.rows[2].cells[0].innerHTML = 'Hardwood Shield';
-    stockTable.rows[2].cells[1].innerHTML = 'Evade +8';        
-    stockTable.rows[2].cells[2].innerHTML = '120 gold';        
-    stockTable.rows[3].cells[0].innerHTML = 'Leather Hat';        
-    stockTable.rows[3].cells[1].innerHTML = 'Defence +4';        
-    stockTable.rows[3].cells[2].innerHTML = '67 gold';        
-    stockTable.rows[4].cells[0].innerHTML = 'Leather Shirt';  
-    stockTable.rows[4].cells[1].innerHTML = 'Defence +8';    
-    stockTable.rows[4].cells[2].innerHTML = '124 gold';    
-    stockTable.rows[5].cells[0].innerHTML = 'Leather Legs'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Defence +8';    
-    stockTable.rows[5].cells[2].innerHTML = '115 gold'; 
-    stockTable.rows[6].cells[0].innerHTML = 'Leather Gloves';  
-    stockTable.rows[6].cells[1].innerHTML = 'Accuracy +10';    
-    stockTable.rows[6].cells[2].innerHTML = '131 gold';    
-    stockTable.rows[7].cells[0].innerHTML = 'Leather Boots'; 
-    stockTable.rows[7].cells[1].innerHTML = 'Evade +8';    
-    stockTable.rows[7].cells[2].innerHTML = '112 gold'; 
-    stockTable.rows[8].cells[0].innerHTML = 'Tarnished Ring'; 
-    stockTable.rows[8].cells[1].innerHTML = 'Luck +4';    
-    stockTable.rows[8].cells[2].innerHTML = '135 gold'; 
-    stockTable.rows[9].cells[0].innerHTML = 'Tarnished Amulet'; 
-    stockTable.rows[9].cells[1].innerHTML = 'Max Health +20';    
-    stockTable.rows[9].cells[2].innerHTML = '135 gold';      
-  }
-  else if (shopTier =="3") { 
-    shop = [" Bone Club", " Reinforced Shield", " Bone Helm", " Bone Chestplate", " Hard Leather Legs", " Hard Leather Mitts", " Hard Leather Boots", " Shiny Ring", " Shiny Amulet"];
-    stockTable.rows[1].cells[0].innerHTML = 'Bone Club'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Strength +15'; 
-    stockTable.rows[1].cells[2].innerHTML = '213 gold'; 
-    stockTable.rows[2].cells[0].innerHTML = 'Reinforced Shield';
-    stockTable.rows[2].cells[1].innerHTML = 'Evade +12';        
-    stockTable.rows[2].cells[2].innerHTML = '183 gold';        
-    stockTable.rows[3].cells[0].innerHTML = 'Bone Helm';        
-    stockTable.rows[3].cells[1].innerHTML = 'Defence +6';        
-    stockTable.rows[3].cells[2].innerHTML = '103 gold';        
-    stockTable.rows[4].cells[0].innerHTML = 'Bone Chestplate';  
-    stockTable.rows[4].cells[1].innerHTML = 'Defence +12';    
-    stockTable.rows[4].cells[2].innerHTML = '196 gold';    
-    stockTable.rows[5].cells[0].innerHTML = 'Hard Leather Legs'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Defence +12';    
-    stockTable.rows[5].cells[2].innerHTML = '181 gold'; 
-    stockTable.rows[6].cells[0].innerHTML = 'Hard Leather Mitts';  
-    stockTable.rows[6].cells[1].innerHTML = 'Accuracy +15';    
-    stockTable.rows[6].cells[2].innerHTML = '213 gold';    
-    stockTable.rows[7].cells[0].innerHTML = 'Hard Leather Boots'; 
-    stockTable.rows[7].cells[1].innerHTML = 'Evade +12';    
-    stockTable.rows[7].cells[2].innerHTML = '178 gold';
-    stockTable.rows[8].cells[0].innerHTML = 'Shiny Ring'; 
-    stockTable.rows[8].cells[1].innerHTML = 'Luck +6';    
-    stockTable.rows[8].cells[2].innerHTML = '215 gold'; 
-    stockTable.rows[9].cells[0].innerHTML = 'Shiny Amulet'; 
-    stockTable.rows[9].cells[1].innerHTML = 'Max Health +30';    
-    stockTable.rows[9].cells[2].innerHTML = '215 gold';    
-  }
-  else if (shopTier =="4") { 
-    shop = [" Hatchet", " Kite Shield", " Tin Helm", " Studded Harness", " Studded Legs", " Studded Gloves", " Hobnail Boots", " Engraved Ring", " Engraved Amulet"];
-    stockTable.rows[1].cells[0].innerHTML = 'Hatchet'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Strength +20'; 
-    stockTable.rows[1].cells[2].innerHTML = '301 gold'; 
-    stockTable.rows[2].cells[0].innerHTML = 'Kite Shield';
-    stockTable.rows[2].cells[1].innerHTML = 'Evade +16';        
-    stockTable.rows[2].cells[2].innerHTML = '265 gold';        
-    stockTable.rows[3].cells[0].innerHTML = 'Tin Helm';        
-    stockTable.rows[3].cells[1].innerHTML = 'Defence +8';        
-    stockTable.rows[3].cells[2].innerHTML = '139 gold';        
-    stockTable.rows[4].cells[0].innerHTML = 'Studded Harness';  
-    stockTable.rows[4].cells[1].innerHTML = 'Defence +16';    
-    stockTable.rows[4].cells[2].innerHTML = '274 gold';    
-    stockTable.rows[5].cells[0].innerHTML = 'Studded Legs'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Defence +16';    
-    stockTable.rows[5].cells[2].innerHTML = '262 gold'; 
-    stockTable.rows[6].cells[0].innerHTML = 'Studded Gloves';  
-    stockTable.rows[6].cells[1].innerHTML = 'Accuracy +20';    
-    stockTable.rows[6].cells[2].innerHTML = '301 gold';    
-    stockTable.rows[7].cells[0].innerHTML = 'Hobnail Boots'; 
-    stockTable.rows[7].cells[1].innerHTML = 'Evade +16';    
-    stockTable.rows[7].cells[2].innerHTML = '256 gold';
-    stockTable.rows[8].cells[0].innerHTML = 'Engraved Ring'; 
-    stockTable.rows[8].cells[1].innerHTML = 'Luck +8';    
-    stockTable.rows[8].cells[2].innerHTML = '305 gold';
-    stockTable.rows[9].cells[0].innerHTML = 'Engraved Amulet'; 
-    stockTable.rows[9].cells[1].innerHTML = 'Max Health +40';    
-    stockTable.rows[9].cells[2].innerHTML = '305 gold';     
-  }
-  else if (shopTier =="5") { 
-    shop = [" Bronze Dagger", " Bronze Shield", " Bronze Helm", " Bronze Chainmail", " Bronze Chainlegs", " Bronze Gloves", " Bronze Boots", " Jade Ring", " Jade Amulet"];
-    stockTable.rows[1].cells[0].innerHTML = 'Bronze Dagger'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Strength +25'; 
-    stockTable.rows[1].cells[2].innerHTML = '403 gold'; 
-    stockTable.rows[2].cells[0].innerHTML = 'Bronze Shield';
-    stockTable.rows[2].cells[1].innerHTML = 'Evade +20';        
-    stockTable.rows[2].cells[2].innerHTML = '333 gold';        
-    stockTable.rows[3].cells[0].innerHTML = 'Bronze Helm';        
-    stockTable.rows[3].cells[1].innerHTML = 'Defence +10';        
-    stockTable.rows[3].cells[2].innerHTML = '175 gold';        
-    stockTable.rows[4].cells[0].innerHTML = 'Bronze Chainmail';  
-    stockTable.rows[4].cells[1].innerHTML = 'Defence +20';    
-    stockTable.rows[4].cells[2].innerHTML = '346 gold';    
-    stockTable.rows[5].cells[0].innerHTML = 'Bronze Chainlegs'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Defence +20';    
-    stockTable.rows[5].cells[2].innerHTML = '334 gold'; 
-    stockTable.rows[6].cells[0].innerHTML = 'Bronze Gloves';  
-    stockTable.rows[6].cells[1].innerHTML = 'Accuracy +25';    
-    stockTable.rows[6].cells[2].innerHTML = '403 gold';    
-    stockTable.rows[7].cells[0].innerHTML = 'Bronze Boots'; 
-    stockTable.rows[7].cells[1].innerHTML = 'Evade +20';    
-    stockTable.rows[7].cells[2].innerHTML = '328 gold';
-    stockTable.rows[8].cells[0].innerHTML = 'Jade Ring'; 
-    stockTable.rows[8].cells[1].innerHTML = 'Luck +10';    
-    stockTable.rows[8].cells[2].innerHTML = '405 gold';
-    stockTable.rows[9].cells[0].innerHTML = 'Jade Amulet'; 
-    stockTable.rows[9].cells[1].innerHTML = 'Max Health +50';    
-    stockTable.rows[9].cells[2].innerHTML = '405 gold';     
-  }  
-  else if (shopTier =="Food & Potions") {
-    shop = [" Bread", " Cheese", " Ham", " Stew", " Power Potion"];
-    stockTable.rows[1].cells[0].innerHTML = 'Crust of Bread'; 
-    stockTable.rows[1].cells[1].innerHTML = 'Health +3, Energy +1';    
-    stockTable.rows[1].cells[2].innerHTML = '19 gold';     
-    stockTable.rows[2].cells[0].innerHTML = 'Piece of Cheese'; 
-    stockTable.rows[2].cells[1].innerHTML = 'Health +5, Energy +2';    
-    stockTable.rows[2].cells[2].innerHTML = '31 gold';     
-    stockTable.rows[3].cells[0].innerHTML = 'Leg of Ham'; 
-    stockTable.rows[3].cells[1].innerHTML = 'Health +8, Energy +3';    
-    stockTable.rows[3].cells[2].innerHTML = '47 gold';     
-    stockTable.rows[4].cells[0].innerHTML = 'Hot Stew'; 
-    stockTable.rows[4].cells[1].innerHTML = 'Health +9, Energy +5';    
-    stockTable.rows[4].cells[2].innerHTML = '70 gold'; 
-    stockTable.rows[5].cells[0].innerHTML = 'Power Potion'; 
-    stockTable.rows[5].cells[1].innerHTML = 'Attribute Points +1';    
-    stockTable.rows[5].cells[2].innerHTML = potionPrice + ' gold';    
-    stockTable.rows[6].cells[0].innerHTML = ''; 
-    stockTable.rows[6].cells[1].innerHTML = '';    
-    stockTable.rows[6].cells[2].innerHTML = '';    
-    stockTable.rows[7].cells[0].innerHTML = ''; 
-    stockTable.rows[7].cells[1].innerHTML = '';    
-    stockTable.rows[7].cells[2].innerHTML = '';    
-    stockTable.rows[8].cells[0].innerHTML = ''; 
-    stockTable.rows[8].cells[1].innerHTML = '';    
-    stockTable.rows[8].cells[2].innerHTML = '';      
-    stockTable.rows[9].cells[0].innerHTML = ''; 
-    stockTable.rows[9].cells[1].innerHTML = '';    
-    stockTable.rows[9].cells[2].innerHTML = '';         
-  }
-  document.getElementById("shop_Tier").style.visibility='hidden';
-  document.getElementById("newStock").style.visibility='hidden';
 }
 function buy() {
   var item = document.getElementById("shopStock").value;

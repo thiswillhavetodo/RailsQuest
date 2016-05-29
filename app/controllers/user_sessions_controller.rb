@@ -1,4 +1,8 @@
 class UserSessionsController < ApplicationController
+
+  layout 'application'
+  layout 'login', :only => :new 
+
 	def new
   	end
 
